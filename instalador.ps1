@@ -1,7 +1,7 @@
 function Show-Menu {
     Clear-Host
     Write-Host "=============================================================================" -ForegroundColor Cyan
-    Write-Host "                          MENU DE INSTALAÇÃO DATASAFER                        " -ForegroundColor Cyan
+    Write-Host "                        MENU DE INSTALAÇÃO DATASAFER TI                      " -ForegroundColor Cyan
     Write-Host "=============================================================================" -ForegroundColor Cyan
     
     $col1 = @("1. Google Chrome", "2. Mozilla Firefox", "3. Brave Browser", "4. Microsoft Edge", "5. Opera GX", "6. Vivaldi", "7. Discord", "8. Telegram", "9. WhatsApp", "10. Zoom")
@@ -15,32 +15,34 @@ function Show-Menu {
     }
     
     Write-Host "=============================================================================" -ForegroundColor Cyan
-    Write-Host "  99. INSTALAR TUDO (Pacote Completo)                         0. Sair"
+    Write-Host " 99. INSTALAR TUDO (Pacote Completo)                         0. Sair"
+    Write-Host " DICA: Para instalar varios, separe por virgula (ex: 1, 2, 3)"
     Write-Host "=============================================================================" -ForegroundColor Cyan
 }
 
 function Install-App {
-    param([string]$packageName)
-    Write-Host "`nInstalando $packageName..." -ForegroundColor Yellow
+    # Agora aceita um array de nomes de pacotes
+    param([string[]]$packageNames)
     
-    # Caminho fixo do executavel do Chocolatey
+    if ($packageNames.Count -eq 0) { return }
+    
+    Write-Host "`nInstalando: $($packageNames -join ', ')..." -ForegroundColor Yellow
+    
     $chocoPath = "C:\ProgramData\chocolatey\bin\choco.exe"
     
-    # Se o Chocolatey nao existir, baixa e instala de forma isolada para nao fechar o menu
+    # Se o Chocolatey nao existir, baixa e instala de forma isolada
     if (-not (Test-Path $chocoPath)) {
         Write-Host "Chocolatey nao encontrado. Instalando o Chocolatey primeiro..." -ForegroundColor Red
         $chocoInstallScript = "$env:TEMP\install_choco.ps1"
         Invoke-WebRequest -Uri "https://community.chocolatey.org/install.ps1" -OutFile $chocoInstallScript -UseBasicParsing
-        
-        # Roda em processo isolado para o comando 'exit' do Chocolatey nao fechar nosso menu
         Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -File `"$chocoInstallScript`"" -Wait -NoNewWindow
         Remove-Item $chocoInstallScript -Force -ErrorAction SilentlyContinue
     }
     
-    # Agora instala o aplicativo usando o caminho completo do choco
+    # Instala todos os pacotes passados de uma vez
     if (Test-Path $chocoPath) {
         Write-Host "Iniciando instalacao via Chocolatey..." -ForegroundColor Cyan
-        & $chocoPath install $packageName -y
+        & $chocoPath install $packageNames -y
     } else {
         Write-Host "Erro: Chocolatey nao foi instalado corretamente." -ForegroundColor Red
     }
@@ -49,72 +51,58 @@ function Install-App {
     Start-Sleep -Seconds 2
 }
 
+# Dicionario para mapear os numeros para os nomes no Chocolatey
+ $appDictionary = @{
+    "1"  = "googlechrome"; "2"  = "firefox"; "3"  = "brave"; "4"  = "microsoft-edge"; "5"  = "opera-gx"
+    "6"  = "vivaldi"; "7"  = "discord"; "8"  = "telegram"; "9"  = "whatsapp"; "10" = "zoom"
+    "11" = "slack"; "12" = "microsoft-teams"; "13" = "teamspeak"; "14" = "vlc"; "15" = "obs-studio"
+    "16" = "spotify"; "17" = "handbrake"; "18" = "foobar2000"; "19" = "audacity"; "20" = "7zip"
+    "21" = "winrar"; "22" = "notepadplusplus"; "23" = "vscode"; "24" = "libreoffice-fresh"; "25" = "adobereader"
+    "26" = "rufus"; "27" = "anydesk"; "28" = "teamviewer"; "29" = "powertoys"; "30" = "steam"
+    "31" = "epicgameslauncher"; "32" = "goggalaxy"; "33" = "ea-app"; "34" = "battle.net"; "35" = "git"
+    "36" = "python"; "37" = "docker-desktop"; "38" = "putty"; "39" = "cloudflare-warp"; "40" = "mullvad"
+}
+
  $exit = $false
 while (-not $exit) {
     Show-Menu
-    $choice = Read-Host "Digite o numero do programa que deseja instalar"
+    $choice = Read-Host "Digite os numeros (ex: 1,2,3) ou 0 para sair"
     
-    $app = ""
-    switch ($choice) {
-        "1" { $app = "googlechrome" }
-        "2" { $app = "firefox" }
-        "3" { $app = "brave" }
-        "4" { $app = "microsoft-edge" }
-        "5" { $app = "opera-gx" }
-        "6" { $app = "vivaldi" }
-        "7" { $app = "discord" }
-        "8" { $app = "telegram" }
-        "9" { $app = "whatsapp" }
-        "10" { $app = "zoom" }
-        "11" { $app = "slack" }
-        "12" { $app = "microsoft-teams" }
-        "13" { $app = "teamspeak" }
-        "14" { $app = "vlc" }
-        "15" { $app = "obs-studio" }
-        "16" { $app = "spotify" }
-        "17" { $app = "handbrake" }
-        "18" { $app = "foobar2000" }
-        "19" { $app = "audacity" }
-        "20" { $app = "7zip" }
-        "21" { $app = "winrar" }
-        "22" { $app = "notepadplusplus" }
-        "23" { $app = "vscode" }
-        "24" { $app = "libreoffice-fresh" }
-        "25" { $app = "adobereader" }
-        "26" { $app = "rufus" }
-        "27" { $app = "anydesk" }
-        "28" { $app = "teamviewer" }
-        "29" { $app = "powertoys" }
-        "30" { $app = "steam" }
-        "31" { $app = "epicgameslauncher" }
-        "32" { $app = "goggalaxy" }
-        "33" { $app = "ea-app" }
-        "34" { $app = "battle.net" }
-        "35" { $app = "git" }
-        "36" { $app = "python" }
-        "37" { $app = "docker-desktop" }
-        "38" { $app = "putty" }
-        "39" { $app = "cloudflare-warp" }
-        "40" { $app = "mullvad" }
-        "99" {
-            Write-Host "Instalando TODOS os pacotes... Isso pode demorar!" -ForegroundColor Red
-            $allApps = @("googlechrome", "firefox", "brave", "microsoft-edge", "opera-gx", "vivaldi", "discord", "telegram", "whatsapp", "zoom", "slack", "microsoft-teams", "teamspeak", "vlc", "obs-studio", "spotify", "handbrake", "foobar2000", "audacity", "7zip", "winrar", "notepadplusplus", "vscode", "libreoffice-fresh", "adobereader", "rufus", "anydesk", "teamviewer", "powertoys", "steam", "epicgameslauncher", "goggalaxy", "ea-app", "battle.net", "git", "python", "docker-desktop", "putty", "cloudflare-warp", "mullvad")
-            foreach ($pkg in $allApps) { Install-App $pkg }
-            $app = "skip"
-        }
-        "0" { 
-            Write-Host "Saindo..." -ForegroundColor Cyan
-            $exit = $true
-            $app = "skip"
-        }
-        default { 
-            Write-Host "Opcao invalida! Tente novamente." -ForegroundColor Red
-            Start-Sleep -Seconds 2
-            $app = "skip"
+    if ($choice -eq "0") {
+        Write-Host "Saindo..." -ForegroundColor Cyan
+        $exit = $true
+        continue
+    }
+    
+    if ($choice -eq "99") {
+        Write-Host "Instalando TODOS os pacotes... Isso pode demorar!" -ForegroundColor Red
+        Install-App $appDictionary.Values
+        continue
+    }
+    
+    # Separa os numeros digitados por virgula
+    $selectedNumbers = $choice -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne "" }
+    
+    $appsToInstall = @()
+    $invalidOptions = @()
+    
+    foreach ($num in $selectedNumbers) {
+        if ($appDictionary.ContainsKey($num)) {
+            $appsToInstall += $appDictionary[$num]
+        } else {
+            $invalidOptions += $num
         }
     }
     
-    if (-not $exit -and $app -ne "skip") {
-        Install-App $app
+    if ($invalidOptions.Count -gt 0) {
+        Write-Host "Opcoes invalidas ignoradas: $($invalidOptions -join ', ')" -ForegroundColor Red
+        Start-Sleep -Seconds 2
+    }
+    
+    if ($appsToInstall.Count -gt 0) {
+        Install-App $appsToInstall
+    } else {
+        Write-Host "Nenhuma opcao valida selecionada." -ForegroundColor Red
+        Start-Sleep -Seconds 2
     }
 }
