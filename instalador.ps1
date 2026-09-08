@@ -23,16 +23,23 @@ function Install-App {
     param([string]$packageName)
     Write-Host "`nInstalando $packageName..." -ForegroundColor Yellow
     
-    # Verifica se o Chocolatey está instalado. Se não, instala automaticamente!
+    # Caminho fixo do executavel do Chocolatey
     $chocoPath = "C:\ProgramData\chocolatey\bin\choco.exe"
+    
+    # Se o Chocolatey nao existir, baixa e instala de forma isolada para nao fechar o menu
     if (-not (Test-Path $chocoPath)) {
         Write-Host "Chocolatey nao encontrado. Instalando o Chocolatey primeiro..." -ForegroundColor Red
-        Set-ExecutionPolicy Bypass -Scope Process -Force
-        iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+        $chocoInstallScript = "$env:TEMP\install_choco.ps1"
+        Invoke-WebRequest -Uri "https://community.chocolatey.org/install.ps1" -OutFile $chocoInstallScript -UseBasicParsing
+        
+        # Roda em processo isolado para o comando 'exit' do Chocolatey nao fechar nosso menu
+        Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -File `"$chocoInstallScript`"" -Wait -NoNewWindow
+        Remove-Item $chocoInstallScript -Force -ErrorAction SilentlyContinue
     }
     
-    # Usa o caminho completo do choco para evitar erros de variavel de ambiente
+    # Agora instala o aplicativo usando o caminho completo do choco
     if (Test-Path $chocoPath) {
+        Write-Host "Iniciando instalacao via Chocolatey..." -ForegroundColor Cyan
         & $chocoPath install $packageName -y
     } else {
         Write-Host "Erro: Chocolatey nao foi instalado corretamente." -ForegroundColor Red
