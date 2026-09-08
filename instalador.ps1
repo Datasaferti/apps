@@ -1,10 +1,9 @@
-﻿function Show-Menu {
+function Show-Menu {
     Clear-Host
     Write-Host "=============================================================================" -ForegroundColor Cyan
-    Write-Host "                          MENU DE INSTALAÇÃO DATASAFER TI                    " -ForegroundColor Cyan
+    Write-Host "                          MENU DE INSTALAÇÃO DATASAFER                        " -ForegroundColor Cyan
     Write-Host "=============================================================================" -ForegroundColor Cyan
     
-    # Organizando em 4 colunas (10 itens por coluna)
     $col1 = @("1. Google Chrome", "2. Mozilla Firefox", "3. Brave Browser", "4. Microsoft Edge", "5. Opera GX", "6. Vivaldi", "7. Discord", "8. Telegram", "9. WhatsApp", "10. Zoom")
     $col2 = @("11. Slack", "12. MS Teams", "13. TeamSpeak", "14. VLC Player", "15. OBS Studio", "16. Spotify", "17. HandBrake", "18. Foobar2000", "19. Audacity", "20. 7-Zip")
     $col3 = @("21. WinRAR", "22. Notepad++", "23. VS Code", "24. LibreOffice", "25. Acrobat Reader", "26. Rufus", "27. AnyDesk", "28. TeamViewer", "29. PowerToys", "30. Steam")
@@ -23,7 +22,22 @@
 function Install-App {
     param([string]$packageName)
     Write-Host "`nInstalando $packageName..." -ForegroundColor Yellow
-    choco install $packageName -y
+    
+    # Verifica se o Chocolatey está instalado. Se não, instala automaticamente!
+    $chocoPath = "C:\ProgramData\chocolatey\bin\choco.exe"
+    if (-not (Test-Path $chocoPath)) {
+        Write-Host "Chocolatey nao encontrado. Instalando o Chocolatey primeiro..." -ForegroundColor Red
+        Set-ExecutionPolicy Bypass -Scope Process -Force
+        iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    }
+    
+    # Usa o caminho completo do choco para evitar erros de variavel de ambiente
+    if (Test-Path $chocoPath) {
+        & $chocoPath install $packageName -y
+    } else {
+        Write-Host "Erro: Chocolatey nao foi instalado corretamente." -ForegroundColor Red
+    }
+    
     Write-Host "Concluido!`n" -ForegroundColor Green
     Start-Sleep -Seconds 2
 }
