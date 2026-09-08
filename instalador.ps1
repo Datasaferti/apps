@@ -1,7 +1,7 @@
 ﻿function Show-Menu {
     Clear-Host
     Write-Host "=============================================================================" -ForegroundColor Cyan
-    Write-Host "                          MENU DE INSTALAÇÃO DATASAFER                        " -ForegroundColor Cyan
+    Write-Host "                          MENU DE INSTALAÇÃO DATASAFER TI                    " -ForegroundColor Cyan
     Write-Host "=============================================================================" -ForegroundColor Cyan
     
     # Organizando em 4 colunas (10 itens por coluna)
