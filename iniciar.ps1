@@ -2,7 +2,7 @@
  $urlInstalador = "https://raw.githubusercontent.com/Datasaferti/apps/main/instalador.ps1"
  $arquivoTemp = "$env:TEMP\instalador_datasafer.ps1"
 
-Write-Host "Carregando o menu de instalacao DataSafer..." -ForegroundColor Cyan
+Write-Host "Carregando o menu de instalacao DataSafer TI..." -ForegroundColor Cyan
 
 try {
     # Baixa o instalador para a pasta TEMP
@@ -18,6 +18,6 @@ finally {
     # Assim que o instalador fecha (opcao 0), apaga o arquivo da pasta TEMP
     if (Test-Path $arquivoTemp) {
         Remove-Item $arquivoTemp -Force
-        Write-Host "Arquivo temporario removido com sucesso do computador." -ForegroundColor Green
+        Write-Host "Obrigado por usar nossos serviços." -ForegroundColor Green
     }
 }
