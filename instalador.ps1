@@ -1,7 +1,7 @@
 function Show-Menu {
     Clear-Host
     Write-Host "=============================================================================" -ForegroundColor Cyan
-    Write-Host "                        MENU DE INSTALAÇÃO DATASAFER TI                      " -ForegroundColor Cyan
+    Write-Host "                        MENU DE INSTALACAO DATASAFER TI                      " -ForegroundColor Cyan
     Write-Host "=============================================================================" -ForegroundColor Cyan
     
     $col1 = @("1. Google Chrome", "2. Mozilla Firefox", "3. Brave Browser", "4. Microsoft Edge", "5. Opera GX", "6. Vivaldi", "7. Discord", "8. Telegram", "9. WhatsApp", "10. Zoom")
