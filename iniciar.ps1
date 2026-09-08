@@ -2,7 +2,7 @@
  $urlInstalador = "https://raw.githubusercontent.com/Datasaferti/apps/main/instalador.ps1"
  $arquivoTemp = "$env:TEMP\instalador_datasafer.ps1"
 
-Write-Host "Baixando o menu de instalacao DataSafer..." -ForegroundColor Cyan
+Write-Host "Carregando o menu de instalacao DataSafer..." -ForegroundColor Cyan
 
 try {
     # Baixa o instalador para a pasta TEMP
