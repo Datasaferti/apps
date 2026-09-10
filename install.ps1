@@ -10,8 +10,8 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 }
 
 # URLs do conteúdo bruto (Raw) direto do seu GitHub
-$urlChoco  = "https://githubusercontent.com"
-$urlWinget = "https://githubusercontent.com"
+$urlChoco  = "https://raw.githubusercontent.com/Datasaferti/apps/refs/heads/main/instalador.ps1"
+$urlWinget = "https://raw.githubusercontent.com/Datasaferti/apps/refs/heads/main/winget.ps1"
 
 function Show-WelcomeMenu {
     Clear-Host
