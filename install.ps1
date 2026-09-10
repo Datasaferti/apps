@@ -1,16 +1,17 @@
 # =============================================================================
-#          GERENCIADOR DE IMPLANTAÇÃO - DATASAFER TI
+#          GERENCIADOR DE IMPLANTAÇÃO REMOTO - DATASAFER TI
 # =============================================================================
 
-# Garante privilégios de Administrador logo na entrada
+# Garante privilégios de Administrador
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Write-Warning "Este script precisa ser executado como Administrador!"
     Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
     Exit
 }
 
-# Define o diretório atual onde este script está rodando
-$currentDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+# URLs do conteúdo bruto (Raw) direto do seu GitHub
+$urlChoco  = "https://githubusercontent.com"
+$urlWinget = "https://githubusercontent.com"
 
 function Show-WelcomeMenu {
     Clear-Host
@@ -20,10 +21,10 @@ function Show-WelcomeMenu {
     Write-Host ""
     Write-Host "  Escolha o gerenciador de pacotes que deseja utilizar para a instalacao:" -ForegroundColor White
     Write-Host ""
-    Write-Host "  [1] Chocolatey (Usa o script 'instalador.ps1')" -ForegroundColor Yellow
-    Write-Host "  [2] WinGet     (Usa o script 'winget.ps1')" -ForegroundColor Green
+    Write-Host "  1. Chocolatey (Usa o script remoto 'instalador.ps1')" -ForegroundColor Yellow
+    Write-Host "  2. WinGet     (Usa o script remoto 'winget.ps1')" -ForegroundColor Green
     Write-Host ""
-    Write-Host "  [0] Sair" -ForegroundColor Red
+    Write-Host "  0. Sair" -ForegroundColor Red
     Write-Host ""
     Write-Host "=============================================================================" -ForegroundColor Cyan
 }
@@ -35,30 +36,32 @@ while (-not $exitManager) {
 
     switch ($choice) {
         "1" {
-            $scriptChoco = Join-Path $currentDir "instalador.ps1"
-            if (Test-Path $scriptChoco) {
-                Write-Host "`n[+] Abrindo instalador via Chocolatey..." -ForegroundColor Yellow
-                Start-Sleep -Seconds 1
-                # Executa o script do chocolatey na mesma sessão
-                & $scriptChoco
+            Write-Host "`n[+] Baixando e abrindo instalador via Chocolatey..." -ForegroundColor Yellow
+            try {
+                # Baixa e executa o código direto na memória da sessão atual
+                $scriptContent = Invoke-RestMethod -Uri $urlChoco -UseBasicParsing
+                Invoke-Expression $scriptContent
                 $exitManager = $true
-            } else {
-                Write-Host "`n[Erro] Arquivo 'instalador.ps1' nao foi encontrado na pasta: $currentDir" -ForegroundColor Red
-                Start-Sleep -Seconds 3
+            }
+            catch {
+                Write-Host "`n[Erro] Falha ao conectar ou baixar o script do Chocolatey do GitHub." -ForegroundColor Red
+                Write-Host "Detalhe: $_" -ForegroundColor DarkRed
+                Start-Sleep -Seconds 4
             }
         }
         
         "2" {
-            $scriptWinget = Join-Path $currentDir "winget.ps1"
-            if (Test-Path $scriptWinget) {
-                Write-Host "`n[+] Abrindo instalador via WinGet..." -ForegroundColor Green
-                Start-Sleep -Seconds 1
-                # Executa o script do winget na mesma sessão
-                & $scriptWinget
+            Write-Host "`n[+] Baixando e abrindo instalador via WinGet..." -ForegroundColor Green
+            try {
+                # Baixa e executa o código direto na memória da sessão atual
+                $scriptContent = Invoke-RestMethod -Uri $urlWinget -UseBasicParsing
+                Invoke-Expression $scriptContent
                 $exitManager = $true
-            } else {
-                Write-Host "`n[Erro] Arquivo 'winget.ps1' nao foi encontrado na pasta: $currentDir" -ForegroundColor Red
-                Start-Sleep -Seconds 3
+            }
+            catch {
+                Write-Host "`n[Erro] Falha ao conectar ou baixar o script do WinGet do GitHub." -ForegroundColor Red
+                Write-Host "Detalhe: $_" -ForegroundColor DarkRed
+                Start-Sleep -Seconds 4
             }
         }
 
