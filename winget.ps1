@@ -17,8 +17,8 @@ function Show-Menu {
     
     $col1 = @("1. Google Chrome", "2. Mozilla Firefox", "3. Brave Browser", "4. Microsoft Edge", "5. Opera GX", "6. Vivaldi", "7. Discord", "8. Telegram", "9. WhatsApp", "10. Zoom")
     $col2 = @("11. Slack", "12. MS Teams", "13. TeamSpeak", "14. VLC Player", "15. OBS Studio", "16. Spotify", "17. HandBrake", "18. Foobar2000", "19. Audacity", "20. 7-Zip")
-    $col3 = @("21. WinRAR", "22. Notepad++", "23. VS Code", "24. LibreOffice", "25. Acrobat Reader", "26. Rufus", "27. AnyDesk", "28. TeamViewer", "29. PowerToys", "30. Steam")
-    $col4 = @("31. Epic Games", "32. GOG Galaxy", "33. EA App", "34. Battle.net", "35. Git", "36. Python", "37. Docker Desktop", "38. Putty", "39. Cloudflare WARP", "40. Mullvad VPN")
+    $col3 = @("21. WinRAR", "22. Notepad++", "23. VS Code", "24. LibreOffice", "25. Acrobat Reader", "26. Rufus", "27. AnyDesk", "28. TeamViewer", "29. Git", "30. Python")
+    $col4 = @("31. Docker Desktop", "32. Putty", "33. Cloudflare WARP", "34. Mullvad VPN", "35. Radmin VPN", "36. CrystalDiskInfo", "37. RAMMap (Sysinternals)")
 
     for ($i = 0; $i -lt 10; $i++) {
         $line = "{0,-22} {1,-22} {2,-22} {3,-22}" -f $col1[$i], $col2[$i], $col3[$i], $col4[$i]
@@ -52,7 +52,7 @@ function Ensure-Winget {
 
         Write-Host "-> Registrando pacotes no sistema..." -ForegroundColor Cyan
         Add-AppxPackage -Path "$tempDir\VCLibs.appx" -ErrorAction SilentlyContinue
-        Add-AppxPackage -Path "$tempDir\UiXaml.appx" -ErrorAction SilentlyContinue
+        Add-AppxPackage -Path "$tempDir\UiXaml.appx" -UseBasicParsing
         Add-AppxPackage -Path "$tempDir\Winget.msixbundle"
 
         Write-Host "[✓] WinGet instalado com sucesso!" -ForegroundColor Green
@@ -85,7 +85,7 @@ function Install-App {
         Write-Host "`nInstalando: $id..." -ForegroundColor Cyan
         
         # Flags aceitam os termos de fontes/contratos de forma silenciosa automaticamente
-        winget install --id $id --silent --accept-source-agreements --accept-package-agreements
+        winget install --id $id --exact --silent --accept-source-agreements --accept-package-agreements
         
         if ($LASTEXITCODE -eq 0) {
             Write-Host "[✓] $id Concluido com sucesso!" -ForegroundColor Green
@@ -98,19 +98,19 @@ function Install-App {
     Start-Sleep -Seconds 3
 }
 
-# Dicionario atualizado com os IDs Oficiais do repositório WinGet (Equivalentes ao Chocolatey antigo)
-$appDictionary = @{
+# Dicionario atualizado - removidos jogos/launchers, adicionadas ferramentas de diagnostico e rede
+ $appDictionary = @{
     "1"  = "Google.Chrome"; "2"  = "Mozilla.Firefox"; "3"  = "Brave.Brave"; "4"  = "Microsoft.Edge"; "5"  = "Opera.OperaGX"
     "6"  = "VivaldiTechnologies.Vivaldi"; "7"  = "Discord.Discord"; "8"  = "Telegram.TelegramDesktop"; "9"  = "WhatsApp.WhatsApp"; "10" = "Zoom.Zoom"
     "11" = "SlackTechnologies.Slack"; "12" = "Microsoft.Teams"; "13" = "TeamSpeakSystems.TeamSpeak"; "14" = "VideoLAN.VLC"; "15" = "OBSProject.OBSStudio"
     "16" = "Spotify.Spotify"; "17" = "HandBrake.HandBrake"; "18" = "foobar2000.foobar2000"; "19" = "Audacity.Audacity"; "20" = "7zip.7zip"
     "21" = "RARLab.WinRAR"; "22" = "Notepad++.Notepad++"; "23" = "Microsoft.VisualStudioCode"; "24" = "DocumentFoundation.LibreOffice"; "25" = "Adobe.Acrobat.Reader.64-bit"
-    "26" = "Akeo.Rufus"; "27" = "AnyDesk.AnyDesk"; "28" = "TeamViewer.TeamViewer"; "29" = "Microsoft.PowerToys"; "30" = "Valve.Steam"
-    "31" = "EpicGames.EpicGamesLauncher"; "32" = "GOG.Galaxy"; "33" = "ElectronicArts.EADesktop"; "34" = "Blizzard.BattleNet"; "35" = "Git.Git"
-    "36" = "Python.Python.3.12"; "37" = "Docker.DockerDesktop"; "38" = "SimonTatham.PuTTY"; "39" = "Cloudflare.Warp"; "40" = "MullvadVPN.MullvadVPN"
+    "26" = "Akeo.Rufus"; "27" = "AnyDesk.AnyDesk"; "28" = "TeamViewer.TeamViewer"; "29" = "Git.Git"; "30" = "Python.Python.3.12"
+    "31" = "Docker.DockerDesktop"; "32" = "SimonTatham.PuTTY"; "33" = "Cloudflare.Warp"; "34" = "MullvadVPN.MullvadVPN"
+    "35" = "Radmin.VPN"; "36" = "CrystalDiskInfo.CrystalDiskInfo"; "37" = "Microsoft.Sysinternals.RAMMap"
 }
 
-$exit = $false
+ $exit = $false
 while (-not $exit) {
     Show-Menu
     $choice = Read-Host "Digite os numeros (ex: 1,2,3) ou 0 para sair"
