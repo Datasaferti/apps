@@ -1,3 +1,14 @@
+# =============================================================================
+#           SCRIPT DE INSTALAÇÃO DATASAFER TI (VERSÃO CHOCOLATEY)
+# =============================================================================
+
+# Garante privilégios de Administrador
+if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    Write-Warning "Este script precisa ser executado como Administrador!"
+    Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    Exit
+}
+
 function Show-Menu {
     Clear-Host
     Write-Host "=============================================================================" -ForegroundColor Cyan
@@ -6,8 +17,8 @@ function Show-Menu {
     
     $col1 = @("1. Google Chrome", "2. Mozilla Firefox", "3. Brave Browser", "4. Microsoft Edge", "5. Opera GX", "6. Vivaldi", "7. Discord", "8. Telegram", "9. WhatsApp", "10. Zoom")
     $col2 = @("11. Slack", "12. MS Teams", "13. TeamSpeak", "14. VLC Player", "15. OBS Studio", "16. Spotify", "17. HandBrake", "18. Foobar2000", "19. Audacity", "20. 7-Zip")
-    $col3 = @("21. WinRAR", "22. Notepad++", "23. VS Code", "24. LibreOffice", "25. Acrobat Reader", "26. Rufus", "27. AnyDesk", "28. TeamViewer", "29. PowerToys", "30. Steam")
-    $col4 = @("31. Epic Games", "32. GOG Galaxy", "33. EA App", "34. Battle.net", "35. Git", "36. Python", "37. Docker Desktop", "38. Putty", "39. Cloudflare WARP", "40. Mullvad VPN")
+    $col3 = @("21. WinRAR", "22. Notepad++", "23. VS Code", "24. LibreOffice", "25. Acrobat Reader", "26. Rufus", "27. AnyDesk", "28. TeamViewer", "29. Git", "30. Python")
+    $col4 = @("31. Docker Desktop", "32. Putty", "33. Cloudflare WARP", "34. Mullvad VPN", "35. Radmin VPN", "36. CrystalDiskInfo", "37. RAMMap (Sysinternals)")
 
     for ($i = 0; $i -lt 10; $i++) {
         $line = "{0,-22} {1,-22} {2,-22} {3,-22}" -f $col1[$i], $col2[$i], $col3[$i], $col4[$i]
@@ -51,16 +62,16 @@ function Install-App {
     Start-Sleep -Seconds 2
 }
 
-# Dicionario para mapear os numeros para os nomes no Chocolatey
+# Dicionario atualizado - removidos jogos/launchers, adicionadas ferramentas de diagnostico e rede
  $appDictionary = @{
     "1"  = "googlechrome"; "2"  = "firefox"; "3"  = "brave"; "4"  = "microsoft-edge"; "5"  = "opera-gx"
     "6"  = "vivaldi"; "7"  = "discord"; "8"  = "telegram"; "9"  = "whatsapp"; "10" = "zoom"
     "11" = "slack"; "12" = "microsoft-teams"; "13" = "teamspeak"; "14" = "vlc"; "15" = "obs-studio"
     "16" = "spotify"; "17" = "handbrake"; "18" = "foobar2000"; "19" = "audacity"; "20" = "7zip"
     "21" = "winrar"; "22" = "notepadplusplus"; "23" = "vscode"; "24" = "libreoffice-fresh"; "25" = "adobereader"
-    "26" = "rufus"; "27" = "anydesk"; "28" = "teamviewer"; "29" = "powertoys"; "30" = "steam"
-    "31" = "epicgameslauncher"; "32" = "goggalaxy"; "33" = "ea-app"; "34" = "battle.net"; "35" = "git"
-    "36" = "python"; "37" = "docker-desktop"; "38" = "putty"; "39" = "cloudflare-warp"; "40" = "mullvad"
+    "26" = "rufus"; "27" = "anydesk"; "28" = "teamviewer"; "29" = "git"; "30" = "python"
+    "31" = "docker-desktop"; "32" = "putty"; "33" = "cloudflare-warp"; "34" = "mullvad"
+    "35" = "radmin-vpn"; "36" = "crystaldiskinfo"; "37" = "rammap"
 }
 
  $exit = $false
